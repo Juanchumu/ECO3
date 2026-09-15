@@ -4,6 +4,7 @@
 
 library(dplyr)
 library(tidyr)
+library(tidyverse)
 
 # ============================================================
 # CARGA DE DATOS
@@ -106,6 +107,27 @@ promedio <- aggregate(
 
 print(promedio)
 
+datos_largo <- datos %>%
+  pivot_longer(
+    cols = -c(AÑO, LOTE, PUNTO, ID_sitio),
+    names_to = "Especie",
+    values_to = "Abundancia"
+  )
+
+ggplot(datos_largo,
+       aes(x = Especie, y = Abundancia, fill = factor(AÑO))) +
+  geom_col(position = position_dodge(width = 0.8),
+           width = 0.7) +
+  facet_wrap(~ LOTE) +
+  labs(
+    x = "Especie",
+    y = "Abundancia",
+    fill = "Año"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 
 # ============================================================
 # 5. AGGREGATE - DESVIO ESTANDAR
@@ -122,6 +144,28 @@ desvio <- aggregate(
 )
 
 print(desvio)
+
+datos_largo <- desvio %>%
+  pivot_longer(
+    cols = -c(AÑO, LOTE),
+    names_to = "Especie",
+    values_to = "Desvio"
+  )
+
+ggplot(datos_largo,
+       aes(x = Especie, y = Desvio, fill = factor(AÑO))) +
+  geom_col(position = position_dodge(width = 0.8),
+           width = 0.7) +
+  facet_wrap(~ LOTE) +
+  labs(
+    x = "Especie",
+    y = "Desvio",
+    fill = "Año"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 
 
 # ============================================================
