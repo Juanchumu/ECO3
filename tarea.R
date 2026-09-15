@@ -12,9 +12,11 @@ library(tidyverse)
 
 datos <- read.csv("TP1_eco3_26 - Macro_Meso.csv")
 
+datos[,-(1:2)]
 #reemplazar los NA con 0
 datos <- replace(datos, is.na(datos),  0  )
 
+tapply(datos[-1:4], datos$LOTE, mean)
 # ============================================================
 # ANALISIS DE DATOS POR LOTE Y AÑO
 # ============================================================
@@ -184,10 +186,34 @@ varianza <- aggregate(
 
 print(varianza)
 
+# Saque juvenil de lombriz porque tiene mucha varianza
+
+datos_largo <- varianza %>%
+  pivot_longer(
+    cols = -c(AÑO, LOTE, juvenil.de.lombriz),
+    names_to = "Especie",
+    values_to = "Varianza"
+  )
+
+ggplot(datos_largo,
+       aes(x = Especie, y = Varianza, fill = factor(AÑO))) +
+  geom_col(position = position_dodge(width = 0.8),
+           width = 0.7) +
+  facet_wrap(~ LOTE) +
+  labs(
+    x = "Especie",
+    y = "Varianza",
+    fill = "Año"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 
 # ============================================================
 # 7. AGGREGATE - MEDIANA
 # ============================================================
+
 
 mediana <- aggregate(
   datos[especies],
@@ -200,6 +226,31 @@ mediana <- aggregate(
 )
 
 print(mediana)
+
+
+datos_largo <- mediana %>%
+  pivot_longer(
+    cols = -c(AÑO, LOTE),
+    names_to = "Especie",
+    values_to = "Mediana"
+  )
+
+ggplot(datos_largo,
+       aes(x = Especie, y = Mediana, fill = factor(AÑO))) +
+  geom_col(position = position_dodge(width = 0.8),
+           width = 0.7) +
+  facet_wrap(~ LOTE) +
+  labs(
+    x = "Especie",
+    y = "Mediana",
+    fill = "Año"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
 
 
 # ============================================================
@@ -219,6 +270,29 @@ minimo <- aggregate(
 print(minimo)
 
 
+datos_largo <- desvio %>%
+  pivot_longer(
+    cols = -c(AÑO, LOTE),
+    names_to = "Especie",
+    values_to = "Minimo"
+  )
+
+ggplot(datos_largo,
+       aes(x = Especie, y = Minimo, fill = factor(AÑO))) +
+  geom_col(position = position_dodge(width = 0.8),
+           width = 0.7) +
+  facet_wrap(~ LOTE) +
+  labs(
+    x = "Especie",
+    y = "Minimo",
+    fill = "Año"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
 # ============================================================
 # 9. AGGREGATE - MAXIMO
 # ============================================================
@@ -234,6 +308,28 @@ maximo <- aggregate(
 )
 
 print(maximo)
+
+datos_largo <- maximo %>%
+  pivot_longer(
+    cols = -c(AÑO, LOTE),
+    names_to = "Especie",
+    values_to = "Maximo"
+  )
+
+ggplot(datos_largo,
+       aes(x = Especie, y = Maximo, fill = factor(AÑO))) +
+  geom_col(position = position_dodge(width = 0.8),
+           width = 0.7) +
+  facet_wrap(~ LOTE) +
+  labs(
+    x = "Especie",
+    y = "Desvio",
+    fill = "Año"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 
 
 # ============================================================
